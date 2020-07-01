@@ -7,7 +7,7 @@ import rospy
 from std_msgs.msg import UInt8
 
 # ls /dev/ | grep video -> provides possible webcam indices
-cap = cv.VideoCapture(4) # Use 0 for built in webcam
+cap = cv.VideoCapture(0) # Use 0 for built in webcam
 
 if not cap.isOpened():
     sys.exit()
@@ -30,8 +30,8 @@ while True:
     position = 90
     hsv_frame = cv.cvtColor(resized, cv.COLOR_BGR2HSV)
 
-    low_red = np.array([161, 155, 84])
-    high_red = np.array([179, 255, 255])
+    low_red = np.array([0, 135, 122])
+    high_red = np.array([255, 255, 255])
     red_mask = cv.inRange(hsv_frame, low_red, high_red)
 
     _, contours, _ = cv.findContours(red_mask, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
@@ -51,9 +51,9 @@ while True:
     elif x_medium > center + 30:
         position -= 1
 
+    cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
     cv.imshow("Video", resized)
 
-    cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
 
     key = cv.waitKey(1) 
 

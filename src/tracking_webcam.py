@@ -5,60 +5,71 @@ import numpy as np
 import sys
 import rospy
 from std_msgs.msg import UInt8
+def servo_move_pub():
 
-# ls /dev/ | grep video -> provides possible webcam indices
-cap = cv.VideoCapture(0) # Use 0 for built in webcam
+    pub = rospy.Publisher('servo_move_pub', UInt8, queue_size=1)
+    rospy.init_node('servo_move_pub', anonymous=True)
+    rate = rospy.Rate(20) # Frequency in Hz
 
-if not cap.isOpened():
-    sys.exit()
+    # ls /dev/ | grep video -> provides possible webcam indices
+    cap = cv.VideoCapture(0) # Use 0 for built in webcam
 
-while True:
-    ok, frame = cap.read()
+    if not cap.isOpened():
+        sys.exit()
 
-    scale_percent = 100 # percent of original size
-    width = int(frame.shape[1] * scale_percent / 100)
-    height = int(frame.shape[0] * scale_percent / 100)
-    dim = (width, height)
+    while not rospy.is_shutdown():
 
-    # resize image
-    resized = cv.resize(frame, dim, interpolation = cv.INTER_AREA) 
+        ok, frame = cap.read()
 
-    rows, cols, _ = resized.shape
-    x_medium = int(cols / 2)
-    center = int(cols / 2)
+        scale_percent = 100 # percent of original size
+        width = int(frame.shape[1] * scale_percent / 100)
+        height = int(frame.shape[0] * scale_percent / 100)
+        dim = (width, height)
 
-    position = 90
-    hsv_frame = cv.cvtColor(resized, cv.COLOR_BGR2HSV)
+        # resize image
+        resized = cv.resize(frame, dim, interpolation = cv.INTER_AREA) 
 
-    low_red = np.array([0, 135, 122])
-    high_red = np.array([255, 255, 255])
-    red_mask = cv.inRange(hsv_frame, low_red, high_red)
+        rows, cols, _ = resized.shape
+        x_medium = int(cols / 2)
+        center = int(cols / 2)
 
-    _, contours, _ = cv.findContours(red_mask, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    contours = sorted(contours, key=lambda x:cv.contourArea(x), reverse=True)
+        position = 90
+        hsv_frame = cv.cvtColor(resized, cv.COLOR_BGR2HSV)
 
- 
+        low_red = np.array([0, 135, 122])
+        high_red = np.array([255, 255, 255])
+        red_mask = cv.inRange(hsv_frame, low_red, high_red)
 
-    for cont in contours:
-        (x, y, w, h) = cv.boundingRect(cont)
-        x_medium = int((x + x + w) / 2)
-        break
+        _, contours, _ = cv.findContours(red_mask, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+        contours = sorted(contours, key=lambda x:cv.contourArea(x), reverse=True)
 
-    cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
+        for cont in contours:
+            (x, y, w, h) = cv.boundingRect(cont)
+            x_medium = int((x + x + w) / 2)
+            break
 
-    if x_medium < center -30:
-        position += 1
-    elif x_medium > center + 30:
-        position -= 1
+        cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
 
-    cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
-    cv.imshow("Video", resized)
+        if x_medium < center -30:
+            position += 1
+        elif x_medium > center + 30:
+            position -= 1
 
+        cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
+        cv.imshow("Video", resized)
 
-    key = cv.waitKey(1) 
+        key = cv.waitKey(1) 
+        if  key == 27:
+            cap.release()
+            cv.destroyAllWindows
+            break
 
-    if  key == 27:
-        cap.release()
-        cv.destroyAllWindows
-        break
+        pub.publish(position)
+        rate.sleep()
+
+    if __name__ == '__main__':
+    try:
+        servo_move_pub()
+    except rospy.ROSInterruptException:
+        pass
     

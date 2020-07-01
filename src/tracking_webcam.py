@@ -6,12 +6,11 @@ import sys
 import rospy
 from std_msgs.msg import UInt8
 
+# ls /dev/ | grep video -> provides possible webcam indices
 cap = cv.VideoCapture(4) # Use 0 for built in webcam
 
 if not cap.isOpened():
     sys.exit()
-
- 
 
 while True:
     ok, frame = cap.read()

@@ -11,7 +11,6 @@ def servo_move_pub():
     rospy.init_node('servo_move_pub', anonymous=False)
     rate = rospy.Rate(10) # Frequency in Hz
 
-    # ls /dev/ | grep video -> provides possible webcam indices
     cap = cv.VideoCapture(0) # Use 0 for built in webcam
 
     if not cap.isOpened():
@@ -46,14 +45,17 @@ def servo_move_pub():
         for cont in contours:
             (x, y, w, h) = cv.boundingRect(cont)
             x_medium = int((x + x + w) / 2)
+            #y_medium = int((y + y + h) / 2)
+            #boxDim = [w, h]
             break
 
         cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
+        #cv.rectangle(resized, (x_medium - boxDim[0]/2, y_medium - boxDim[1]/2),(x_medium-boxDim[0]/2, y_medium + boxDim[1]/2), (x_medium + boxDim[0]/2, y_medium + boxDim[1]/2),(x_medium + boxDim[0]/2, y_medium - boxDim[1]/2), (0, 255, 0), 2)
 
         if x_medium < center -30:
-            position = 135
+            position = 80
         elif x_medium > center + 30:
-            position = 45
+            position = 100
 
         cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
         cv.imshow("Video", resized)

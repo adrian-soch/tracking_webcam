@@ -20,7 +20,7 @@ ros::NodeHandle  nh;
 
 Servo servo;
 
-void servo_cb( const std_msgs::UInt8& cmd_msg){
+void servo_cb( const std_msgs::UInt8 & cmd_msg){
   servo.write(cmd_msg.data); //set servo angle, should be from 0-180  
   if(cmd_msg.data == 90)
     digitalWrite(laserPin, LOW);  //laser off when stationary 
@@ -33,10 +33,13 @@ ros::Subscriber<std_msgs::UInt8> sub("servo", servo_cb);
 
 void setup(){
   pinMode(laserPin, OUTPUT);
-
+  
+  //nh.getHardware()->setBaud(115200);
+  
   nh.initNode();
   nh.subscribe(sub);
   
+  //Serial.begin(115200);
   servo.attach(9); //use pin 9 to control servo
 }
 

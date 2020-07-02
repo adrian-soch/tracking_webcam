@@ -1,9 +1,10 @@
 # tracking_webcam
 
->A small project utilizing a servo to pan a webcam to follow a target.
+> A small project utilizing computer vision to follow a target with a webcam in the horizontal plane.
+
 Using rosserial to communicate from host computer to arduino. Arduino handles servo control.
 
-Multiple tracking methods will be implemented, initially a colour based object detection will be deployed.
+Current tracking method is based on HSV colour detection.
 
 #### To-Do
 - Use a different methodto get contours (ie canny edges)
@@ -25,3 +26,8 @@ Ensure the tracking_webcam.launch has the correct port
 
 Run `roslaunch tracking_webcam tracking_webcam.launch`
 
+#### Notes
+
+Run `include/range-detector.py --filter HSV --webcam` to see a live preview with the HSV mask, you can adjust the sliders for any colour you want to detect.
+
+> WSL 2 does not yet support using the webcam or usb ports, I did not check if this works on a VM, nor did I check if this works with the Windows installation of ROS

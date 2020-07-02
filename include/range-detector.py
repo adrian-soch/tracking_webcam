@@ -99,17 +99,14 @@ def main():
         mask1 = cv2.dilate(thresh, None, iterations=2)
         mask1 = cv2.erode(thresh, None, iterations=2)
 
-        mask2 = cv2.erode(thresh, None, iterations=2)
-        mask2 = cv2.dilate(thresh, None, iterations=2)
-
         if args['preview']:
             preview = cv2.bitwise_and(image, image, mask=thresh)
             cv2.imshow("Preview", preview)
         else:
             cv2.imshow("Original", image)
             cv2.imshow("Thresh", thresh)
-            cv2.imshow("Erode", mask1)
-            cv2.imshow("Dilate", mask2)
+            #cv2.imshow("Erode", mask1)
+
 
         if cv2.waitKey(1) & 0xFF is ord('q'):
             break

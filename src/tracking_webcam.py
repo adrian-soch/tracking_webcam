@@ -7,9 +7,9 @@ import rospy
 from std_msgs.msg import UInt8
 def servo_move_pub():
 
-    pub = rospy.Publisher('servo_move_pub', UInt8, queue_size=1)
-    rospy.init_node('servo_move_pub', anonymous=True)
-    rate = rospy.Rate(20) # Frequency in Hz
+    pub = rospy.Publisher('servo', UInt8, queue_size=10)
+    rospy.init_node('servo_move_pub', anonymous=False)
+    rate = rospy.Rate(10) # Frequency in Hz
 
     # ls /dev/ | grep video -> provides possible webcam indices
     cap = cv.VideoCapture(0) # Use 0 for built in webcam
@@ -51,9 +51,9 @@ def servo_move_pub():
         cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
 
         if x_medium < center -30:
-            position += 1
+            position = 135
         elif x_medium > center + 30:
-            position -= 1
+            position = 45
 
         cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
         cv.imshow("Video", resized)
@@ -67,7 +67,7 @@ def servo_move_pub():
         pub.publish(position)
         rate.sleep()
 
-    if __name__ == '__main__':
+if __name__ == '__main__':
     try:
         servo_move_pub()
     except rospy.ROSInterruptException:

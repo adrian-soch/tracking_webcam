@@ -6,15 +6,22 @@ Using rosserial to communicate from host computer to arduino. Arduino handles se
 
 Current tracking method is based on HSV colour detection.
 
+#### Hardware
+- stl models [here](https://github.com/adrian-soch/tracking_webcam/tree/master/stl)
+- any arduino or arduino clone
+- USB 2.0 Cable Type A/B
+- servo (I'm using a continous servo, any type is fine)
+- USB Webcam
+
 #### To-Do
 - Use a different methodto get contours (ie canny edges)
 - Implement a more robust tracking algorithm
 - Update the algorithm for moving the servo towards the target (ie PID or something)
-- 3D print a better servo/webcam base
+- ~~3D print a better servo/webcam base~~
 
 #### Usage
 
-Clone repository into catkin_ws/src
+Clone repository into catkin_ws/src,
 `cd ..` then `catkin_make`
 
 `ls /dev/ | grep video` -> provides possible webcam indices
@@ -28,6 +35,6 @@ Run `roslaunch tracking_webcam tracking_webcam.launch`
 
 #### Notes
 
-Run `include/range-detector.py --filter HSV --webcam` to see a live preview with the HSV mask, you can adjust the sliders for any colour you want to detect.
+Run `include/range-detector.py --filter HSV --webcam` to see a live preview with the HSV mask, you can adjust the sliders for any colour you want to detect. This can also be a convenient place to test any other algorithms for segmentation.
 
 > WSL 2 does not yet support using the webcam or usb ports, I did not check if this works on a VM, nor did I check if this works with the Windows installation of ROS

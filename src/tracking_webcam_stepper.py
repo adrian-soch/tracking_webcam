@@ -17,7 +17,7 @@ def servo_move_pub():
     if not cap.isOpened():
         sys.exit()
 
-    position = 90
+    speed = 0
     k_p = 0.001
     k_i = 0.005
     k_d = 0.01
@@ -60,10 +60,6 @@ def servo_move_pub():
         cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
         #cv.rectangle(resized, (x_medium - boxDim[0]/2, y_medium - boxDim[1]/2),(x_medium-boxDim[0]/2, y_medium + boxDim[1]/2), (x_medium + boxDim[0]/2, y_medium + boxDim[1]/2),(x_medium + boxDim[0]/2, y_medium - boxDim[1]/2), (0, 255, 0), 2)
 
-        # if x_medium < center -30:
-        #     position += 1
-        # elif x_medium > center + 30:
-        #     position -= 1
         err = center - x_medium
         
         dt = 1.0/freq
@@ -72,17 +68,12 @@ def servo_move_pub():
         sum_err += err*dt
         
         if(abs(err) > deadzone):
-            position = 90 - int(k_p*err + k_i*sum_err + k_d*(derr/dt))
+            speed = int(k_p*err + k_i*sum_err + k_d*(derr/dt))
         else:
-            position = 90
+            speed = 0
             sum_err = 0
 
-        if(position <= 0):
-            position = 0
-        elif(position >= 180):
-            position = 180
-
-        rospy.loginfo("Error: %d\nPosition: %d", err, position)
+        rospy.loginfo("Error: %d\nspeed: %d", err, speed)
         cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
         cv.imshow("Video", resized)
 
@@ -92,7 +83,7 @@ def servo_move_pub():
             cv.destroyAllWindows
             break
 
-        pub.publish(position)
+        pub.publish(speed)
         rate.sleep()
 
 if __name__ == '__main__':

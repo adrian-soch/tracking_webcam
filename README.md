@@ -2,7 +2,7 @@
 
 > A small project utilizing computer vision to follow a target with a webcam in the horizontal plane.
 
-Using rosserial to communicate from host computer to arduino. Arduino handles servo control.
+Using rosserial to communicate from host computer to arduino. Arduino handles servo/stepper control.
 
 Current tracking method is based on HSV colour detection.
 
@@ -31,7 +31,7 @@ Upload the ros_servo_sub.ino to the arduino
 Check `ls /dev/ttyACM*` to check which port the arduino is connected to
 Ensure the tracking_webcam.launch has the correct port
 
-Run `roslaunch tracking_webcam tracking_webcam.launch`
+Run `roslaunch tracking_webcam servo.launch` or `roslaunch tracking_webcam stepper.launch`
 
 #### Notes
 

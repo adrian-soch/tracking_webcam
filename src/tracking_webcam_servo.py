@@ -18,12 +18,7 @@ def servo_move_pub():
         sys.exit()
 
     position = 90
-    k_p = 0.001
-    k_i = 0.005
-    k_d = 0.01
     deadzone = 30
-    past_err = 0
-    sum_err = 0
 
     while not rospy.is_shutdown():
 
@@ -59,23 +54,13 @@ def servo_move_pub():
 
         cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
         #cv.rectangle(resized, (x_medium - boxDim[0]/2, y_medium - boxDim[1]/2),(x_medium-boxDim[0]/2, y_medium + boxDim[1]/2), (x_medium + boxDim[0]/2, y_medium + boxDim[1]/2),(x_medium + boxDim[0]/2, y_medium - boxDim[1]/2), (0, 255, 0), 2)
-
-        # if x_medium < center -30:
-        #     position += 1
-        # elif x_medium > center + 30:
-        #     position -= 1
-        err = center - x_medium
         
-        dt = 1.0/freq
-        derr = err - past_err
-        past_err = err
-        sum_err += err*dt
+        err = x_medium - center
         
-        if(abs(err) > deadzone):
-            position = 90 - int(k_p*err + k_i*sum_err + k_d*(derr/dt))
-        else:
-            position = 90
-            sum_err = 0
+        if err < deadzone:
+            position += 2
+        elif err > deadzone:
+            position -= 2
 
         if(position <= 0):
             position = 0

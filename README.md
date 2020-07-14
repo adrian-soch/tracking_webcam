@@ -1,6 +1,8 @@
 # tracking_webcam
 
-> A small project utilizing computer vision to follow a target with a webcam in the horizontal plane.
+![IMG_0379](https://user-images.githubusercontent.com/6884645/87463069-d8dd1300-c5de-11ea-9487-db58ed457b65.jpg)
+
+A small project utilizing computer vision to follow a target with a webcam in the horizontal plane.
 
 Using rosserial to communicate from host computer to arduino. Arduino handles servo/stepper control.
 

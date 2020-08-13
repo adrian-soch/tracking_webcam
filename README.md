@@ -9,15 +9,15 @@ Using rosserial to communicate from host computer to arduino. Arduino handles se
 Current tracking method is based on HSV colour detection.
 
 #### Hardware
-- stl models [here](https://github.com/adrian-soch/tracking_webcam/tree/master/stl)
-- any arduino or arduino clone
+- Base and webcam holder (STL models [here](https://github.com/adrian-soch/tracking_webcam/tree/master/stl))
+- Any arduino or arduino clone
 - USB 2.0 Cable Type A/B
-- servo (I'm using a continous servo, any type is fine)
+- Servo motor
 - USB Webcam
 
 #### To-Do
-- Use a different methodto get contours (ie canny edges)
-- Implement a more robust tracking algorithm
+- Implement a deep learning tracking model
+- Investigate Kalman filter for tracking stability
 - Update the algorithm for moving the servo towards the target (ie PID or something)
 - ~~3D print a better servo/webcam base~~
 

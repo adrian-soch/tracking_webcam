@@ -11,15 +11,15 @@
 
 #include <AccelStepper.h>
 #include <ros.h>
-#include <std_msgs/UInt8.h>
+#include <std_msgs/Int16.h>
 
 int laserPin = 8;
 
 AccelStepper stepper; // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 ros::NodeHandle  nh;
 
-void stepper_cb( const std_msgs::UInt8 & cmd_msg){
-  servo.write(cmd_msg.data); //set servo angle, should be from 0-180  
+void stepper_cb( const std_msgs::Int16 & cmd_msg){
+  stepper.setSpeed(cmd_msg.data); 
   if(cmd_msg.data != 0)
     digitalWrite(laserPin, LOW);  //laser off when stationary 
    else
@@ -32,8 +32,7 @@ void setup()
 {  
   pinMode(laserPin, OUTPUT);
   
-  stepper.setMaxSpeed(1000);
-  //stepper.setSpeed(50);	
+  stepper.setMaxSpeed(1200);
   
   nh.initNode();
   nh.subscribe(sub);
@@ -41,7 +40,7 @@ void setup()
 
 void loop()
 {  
-   //stepper.runSpeed();
+   stepper.runSpeed();
    nh.spinOnce();
    delay(1);
 }

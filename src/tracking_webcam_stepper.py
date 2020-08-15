@@ -4,11 +4,12 @@ import cv2 as cv
 import numpy as np
 import sys
 import rospy
-from std_msgs.msg import UInt8
+from std_msgs.msg import Int16
+
 def servo_move_pub():
     freq = 10
 
-    pub = rospy.Publisher('servo', UInt8, queue_size=10)
+    pub = rospy.Publisher('servo', Int16, queue_size=10)
     rospy.init_node('servo_move_pub', anonymous=False)
     rate = rospy.Rate(freq) # Frequency in Hz
 
@@ -18,12 +19,12 @@ def servo_move_pub():
         sys.exit()
 
     speed = 0
-    k_p = 0.001
-    k_i = 0.005
-    k_d = 0.01
+    k_p = 2
+    #k_i = 0.005
+    #k_d = 0.01
     deadzone = 30
-    past_err = 0
-    sum_err = 0
+    #past_err = 0
+    #sum_err = 0
 
     while not rospy.is_shutdown():
 
@@ -62,16 +63,17 @@ def servo_move_pub():
 
         err = center - x_medium
         
-        dt = 1.0/freq
-        derr = err - past_err
-        past_err = err
-        sum_err += err*dt
+        speed = err*k_p
+        #dt = 1.0/freq
+        #derr = err - past_err
+        #past_err = err
+        #sum_err += err*dt
         
-        if(abs(err) > deadzone):
-            speed = int(k_p*err + k_i*sum_err + k_d*(derr/dt))
-        else:
-            speed = 0
-            sum_err = 0
+        #if(abs(err) > deadzone):
+        #    speed = int(k_p*err + k_i*sum_err + k_d*(derr/dt))
+        #else:
+        #    speed = 0
+        #    sum_err = 0
 
         rospy.loginfo("Error: %d\nspeed: %d", err, speed)
         cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)

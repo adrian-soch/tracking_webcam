@@ -14,6 +14,7 @@ Current tracking method is based on HSV colour detection.
 - USB 2.0 Cable Type A/B
 - Servo motor
 - USB Webcam
+- Stepper Motor + Driver (28BYJ-48)
 
 #### To-Do
 - Implement a deep learning tracking model

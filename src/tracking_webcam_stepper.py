@@ -63,7 +63,10 @@ def servo_move_pub():
 
         err = center - x_medium
         
-        speed = err*k_p
+        if(abs(err) < deadzone):
+            speed = err*k_p
+        else:
+            speed = 0
         #dt = 1.0/freq
         #derr = err - past_err
         #past_err = err

@@ -1,6 +1,6 @@
-#Servo and Stepper Assembly
+## Servo and Stepper Assembly
 
-Designed with Solidworks, printed on Creality Ender 3.
+##### Designed with Solidworks, printed on Creality Ender 3.
 
 Print Settings:
 

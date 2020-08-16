@@ -7,10 +7,10 @@ import rospy
 from std_msgs.msg import Int16
 
 def servo_move_pub():
-    freq = 10
+    freq = 30
 
-    pub = rospy.Publisher('servo', Int16, queue_size=10)
-    rospy.init_node('servo_move_pub', anonymous=False)
+    pub = rospy.Publisher('stepper', Int16, queue_size=10)
+    rospy.init_node('stepper_move_pub', anonymous=False)
     rate = rospy.Rate(freq) # Frequency in Hz
 
     cap = cv.VideoCapture(2) # Use 0 for built in webcam
@@ -63,10 +63,11 @@ def servo_move_pub():
 
         err = center - x_medium
         
-        if(abs(err) < deadzone):
+        if(abs(err) > deadzone):
             speed = err*k_p
         else:
             speed = 0
+
         #dt = 1.0/freq
         #derr = err - past_err
         #past_err = err

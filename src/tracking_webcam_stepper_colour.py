@@ -39,7 +39,7 @@ def servo_move_pub():
         resized = cv.resize(frame, dim, interpolation = cv.INTER_AREA) 
 
         rows, cols, _ = resized.shape
-        x_medium = int(cols / 2)
+        center_x = int(cols / 2)
         center = int(cols / 2)
 
         hsv_frame = cv.cvtColor(resized, cv.COLOR_BGR2HSV)
@@ -53,15 +53,15 @@ def servo_move_pub():
 
         for cont in contours:
             (x, y, w, h) = cv.boundingRect(cont)
-            x_medium = int((x + x + w) / 2)
+            center_x = int((x + x + w) / 2)
             #y_medium = int((y + y + h) / 2)
             #boxDim = [w, h]
             break
 
-        cv.line(resized, (x_medium, 0), (x_medium, 480), (0, 255, 0), 2)
-        #cv.rectangle(resized, (x_medium - boxDim[0]/2, y_medium - boxDim[1]/2),(x_medium-boxDim[0]/2, y_medium + boxDim[1]/2), (x_medium + boxDim[0]/2, y_medium + boxDim[1]/2),(x_medium + boxDim[0]/2, y_medium - boxDim[1]/2), (0, 255, 0), 2)
+        cv.line(resized, (center_x, 0), (center_x, 480), (0, 255, 0), 2)
+        #cv.rectangle(resized, (center_x - boxDim[0]/2, y_medium - boxDim[1]/2),(center_x-boxDim[0]/2, y_medium + boxDim[1]/2), (center_x + boxDim[0]/2, y_medium + boxDim[1]/2),(center_x + boxDim[0]/2, y_medium - boxDim[1]/2), (0, 255, 0), 2)
 
-        err = center - x_medium
+        err = center - center_x
         
         if(abs(err) > deadzone):
             speed = err*k_p
@@ -80,7 +80,7 @@ def servo_move_pub():
         #    sum_err = 0
 
         #rospy.loginfo("Error: %d\nspeed: %d", err, speed)
-        cv.line(resized, (x_medium, 0),(x_medium, 480), (0,255,0), 2)
+        cv.line(resized, (center_x, 0),(center_x, 480), (0,255,0), 2)
         cv.imshow("Video", resized)
 
         key = cv.waitKey(1) 

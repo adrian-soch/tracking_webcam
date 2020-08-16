@@ -14,24 +14,27 @@
 #include <std_msgs/Int16.h>
 
 int laserPin = 8;
+int speedDesired = 0;
+
 
 AccelStepper stepper; // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 ros::NodeHandle  nh;
 
 void stepper_cb( const std_msgs::Int16 & cmd_msg){
-  stepper.setSpeed(cmd_msg.data); 
-  if(cmd_msg.data != 0)
-    digitalWrite(laserPin, LOW);  //laser off when stationary 
+   stepper.setSpeed(cmd_msg.data);
+   if(cmd_msg.data != 0){
+    digitalWrite(laserPin, HIGH);
+   }
    else
-    digitalWrite(laserPin, HIGH);  //laser on when moving 
+    digitalWrite(laserPin, LOW);
+  
 }
 
-ros::Subscriber<std_msgs::UInt8> sub("stepper", stepper_cb);
+ros::Subscriber<std_msgs::Int16> sub("stepper", stepper_cb);
 
 void setup()
 {  
   pinMode(laserPin, OUTPUT);
-  
   stepper.setMaxSpeed(1200);
   
   nh.initNode();
@@ -39,7 +42,7 @@ void setup()
 }
 
 void loop()
-{  
+{   
    stepper.runSpeed();
    nh.spinOnce();
    delay(1);

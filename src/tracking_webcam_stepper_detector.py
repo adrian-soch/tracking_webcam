@@ -2,26 +2,14 @@
 
 import cv2 as cv
 import numpy as np
+import argparse
 import sys
 import rospy
 from std_msgs.msg import Int16
 
-# _______________________DNN Setup_________________________________
-####################################################################
-thresh = 0.6
-prototxt = "MobileNetSSD_deploy.prototxt"
-weights = "MobileNetSSD_deploy.caffemodel"
+print(cv.__version__)
 
-# Shortened List
-classNames = { 0: 'background',
-    1: 'aeroplane', 2: 'bicycle', 3: 'bird', 4: 'boat',
-    5: 'bottle', 6: 'bus', 7: 'car', 8: 'cat', 9: 'chair',
-    10: 'cow', 11: 'diningtable', 12: 'dog', 13: 'horse',
-    14: 'motorbike', 15: 'person', 16: 'pottedplant'}
 
-net = cv.dnn.readNetFromCaffe(prototxt, weights)
-net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
-net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
 
 def servo_move_pub():
     freq = 30
@@ -29,6 +17,28 @@ def servo_move_pub():
     pub = rospy.Publisher('stepper', Int16, queue_size=10)
     rospy.init_node('stepper_move_pub', anonymous=False)
     rate = rospy.Rate(freq) # Frequency in Hz
+
+
+
+    thresh = 0.6
+    prototxt = "MobileNetSSD_deploy.prototxt.txt"
+    model = "MobileNetSSD_deploy.caffemodel"
+    dir = rospy.get_param("~data_dir")
+
+
+    # Shortened List
+    classNames = { 0: 'background',
+        1: 'aeroplane', 2: 'bicycle', 3: 'bird', 4: 'boat',
+        5: 'bottle', 6: 'bus', 7: 'car', 8: 'cat', 9: 'chair',
+        10: 'cow', 11: 'diningtable', 12: 'dog', 13: 'horse',
+        14: 'motorbike', 15: 'person', 16: 'pottedplant'}
+
+    net = cv.dnn.readNetFromCaffe(dir + prototxt, dir + model)
+    net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
+    net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
+
+
+
 
     cap = cv.VideoCapture(2) # Use 0 for built in webcam
 
@@ -73,13 +83,13 @@ def servo_move_pub():
 
                 if class_id in classNames:
 
-                    label = classNames[class_id] + ": " + f'{confidence:.3}'
+                    label = classNames[class_id] + ": " + "{:2.3f}".format(confidence) #f'{confidence:.3}'
                     labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
                     yLeftBottom = max(yLeftBottom, labelSize[1])
                     cv.rectangle(frame, (xLeftBottom, yLeftBottom - labelSize[1]), (xLeftBottom + labelSize[0], yLeftBottom + baseLine),(255, 255, 255), cv.FILLED)
                     cv.putText(frame, label, (xLeftBottom, yLeftBottom),cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
 
-                    label = "fps: " + f'{fps:.3}'
+                    label = "fps: " + "{:.1f}".format(fps)#f'{fps:.3}'
                     labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
                     cv.rectangle(frame, (0, 15 - labelSize[1]), (0 + labelSize[0], 15 + baseLine),(255, 255, 255), cv.FILLED)
                     cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (20, 20, 255))

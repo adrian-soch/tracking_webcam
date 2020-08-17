@@ -4,6 +4,8 @@
         <param name="baud" value="57600"/>
     </node>
     
-    <node pkg="tracking_webcam" type="tracking_webcam_stepper_detector.py" name="tracker"> </node>
+    <node pkg="tracking_webcam" type="tracking_webcam_stepper_detector.py" name="tracker"> 
+        <param name="data_dir" value="$(find tracking_webcam)/model/"/>
+    </node>
 
 </launch>
